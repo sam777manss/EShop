@@ -21,10 +21,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.14" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Serilog" Version="2.12.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Models\Temp\" />
     <Folder Include="wwwroot\AdminFiles\" />
     <Folder Include="wwwroot\ClientFiles\" />
     <Folder Include="wwwroot\lib\" />

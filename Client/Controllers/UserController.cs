@@ -72,6 +72,34 @@ namespace Client.Controllers
         }
         #endregion
 
+        #region DeleteProduct
+        [HttpGet]
+        public async Task<IActionResult> DeleteProduct(string UserCartTableId)
+        {
+            try
+            {
+
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(URL);
+                    var response = await client.DeleteAsync("Product/DeleteProduct?UserCartTableId=" + UserCartTableId);
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("UserCartDetails", "User");
+                    }
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
+
+            }
+            return RedirectToAction("UserCartDetails", "User");
+        }
+        #endregion
+
         [HttpGet]
         public async Task<IActionResult> UserCartDetails()
         {
@@ -89,7 +117,7 @@ namespace Client.Controllers
                         UserCartDetails? users = JsonConvert.DeserializeObject<UserCartDetails>(responseContent);
                         if (response.IsSuccessStatusCode)
                         {
-                          View(users);
+                          return View(users);
                         }
                     }
                 }

@@ -58,7 +58,7 @@
                     <a class="text-dark" href="">Support</a>
                     <span class="text-muted px-2">|</span>
 
-                    <a class="text-dark" href="">Hi sameer</a>
+                    <a class="text-dark" href="">Hi @Model.aspUsersTable.UserName</a>
                 </div>
             </div>
             <div class="col-lg-6 text-center text-lg-right">
@@ -107,7 +107,7 @@
                 <a href="" class="btn border">
                     <i class="fas fa-shopping-cart text-primary"></i>
                     <span class="badge">
-                        9
+                        @Model.productTable.Count()
                     </span>
                 </a>
             </div>
@@ -130,117 +130,39 @@
                             </tr>
                         </thead>
                         <tbody class="align-middle">
-                            @foreach (var products in Model.productTable)
-                            {
-                                @products.ProductId;
-                                @products.ProductName
-                                @products.Price
-                            }
-                            <tr>
-                                <td class="align-middle"><img src="img/product-1.jpg" alt="" style="width: 50px;"> Colorful Stylish Shirt</td>
-                                <td class="align-middle">$150</td>
-                                <td class="align-middle">
-                                    <div class="input-group quantity mx-auto" style="width: 100px;">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-minus">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-plus">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="align-middle">$150</td>
-                                <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-                            </tr>
-                            <tr>
-                                <td class="align-middle"><img src="img/product-2.jpg" alt="" style="width: 50px;"> Colorful Stylish Shirt</td>
-                                <td class="align-middle">$150</td>
-                                <td class="align-middle">
-                                    <div class="input-group quantity mx-auto" style="width: 100px;">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-minus">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-plus">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="align-middle">$150</td>
-                                <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-                            </tr>
-                            <tr>
-                                <td class="align-middle"><img src="img/product-3.jpg" alt="" style="width: 50px;"> Colorful Stylish Shirt</td>
-                                <td class="align-middle">$150</td>
-                                <td class="align-middle">
-                                    <div class="input-group quantity mx-auto" style="width: 100px;">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-minus">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-plus">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="align-middle">$150</td>
-                                <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-                            </tr>
-                            <tr>
-                                <td class="align-middle"><img src="img/product-4.jpg" alt="" style="width: 50px;"> Colorful Stylish Shirt</td>
-                                <td class="align-middle">$150</td>
-                                <td class="align-middle">
-                                    <div class="input-group quantity mx-auto" style="width: 100px;">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-minus">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-plus">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="align-middle">$150</td>
-                                <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-                            </tr>
-                            <tr>
-                                <td class="align-middle"><img src="img/product-5.jpg" alt="" style="width: 50px;"> Colorful Stylish Shirt</td>
-                                <td class="align-middle">$150</td>
-                                <td class="align-middle">
-                                    <div class="input-group quantity mx-auto" style="width: 100px;">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-minus">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-plus">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="align-middle">$150</td>
-                                <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-                            </tr>
+@*                              @products.aspUsersTable.Id;
+                                @products.aspUsersTable.Address
+                                @products.aspUsersTable.Country*@
+
+                                @foreach(var product in @Model.productTable)
+                                {
+                                    <tr>
+                                        <td class="align-middle"><img src="/ImagesFolder/@product.MainImage" alt="" style="width: 50px;"> Colorful Stylish Shirt</td>
+                                        <td class="align-middle">Rs @product.Price</td>
+                                        <td class="align-middle">
+                                            <div class="input-group quantity mx-auto" style="width: 100px;">
+                                                <div class="input-group-btn">
+                                                <button class="btn btn-sm btn-primary btn-minus" id="minus" onclick="Sum('minus', '@product.ProductId', 'ProductTotalPrize', '@product.Price')">
+                                                        <i class="fa fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm bg-secondary text-center" id="@product.ProductId" value="1">
+                                                <div class="input-group-btn">
+                                                <button class="btn btn-sm btn-primary btn-plus" id="plus" onclick="Sum('plus', '@product.ProductId', 'ProductTotalPrize', '@product.Price')">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    <td class="align-middle" id="ProductTotalPrize'@product.ProductId'" data-price="@product.Price">Rs @product.Price</td>
+                                    <td class="align-middle">
+                                        <a asp-controller="User" asp-action="DeleteProduct" asp-route-UserCartTableId="@product.UserCartTableId">
+                                            <button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button>
+                                        </a>
+                                    </td>
+                                    </tr>
+                                }
+                        
                         </tbody>
                     </table>
                 </div>
@@ -270,7 +192,7 @@
                         <div class="card-footer border-secondary bg-transparent">
                             <div class="d-flex justify-content-between mt-2">
                                 <h5 class="font-weight-bold">Total</h5>
-                                <h5 class="font-weight-bold">$160</h5>
+                                <h5 class="font-weight-bold" id="totalCost">$160</h5>
                             </div>
                             <button class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
                         </div>
@@ -545,5 +467,55 @@
     <script src="/_framework/aspnetcore-browser-refresh.js"></script>
 
     <live-preview-root></live-preview-root>
+
+    <script>
+        function calculatePrice(){
+            debugger;
+            let totalPrize = 0;
+
+            const productElements = document.querySelectorAll('[id^="ProductTotalPrize"]')
+            productElements.forEach((element) => {
+                const price = parseFloat(element.getAttribute('data-price'));
+                totalPrize += price;
+                document.getElementById("totalCost").innerHTML = "Rs " + totalPrize;
+            });
+        }
+
+        window.onload = function () {
+            calculatePrice();
+        };
+
+        function Sum(action, productId, findId, initialprize)
+        {
+            debugger;
+            var totalprizedata = findId + "'" + productId + "'";
+            var element = document.getElementById(totalprizedata);
+            var totalprize = element.getAttribute("data-price");
+
+            var currentQuantity = parseInt(document.getElementById(productId).value);
+
+            //currentQuantity = document.querySelector('.form-control form-control-sm bg-secondary text-center').value;
+            if(action === 'plus')
+            {
+                document.getElementById(productId).value = currentQuantity + 1;
+                var newtotalprize = parseInt(totalprize) + parseInt(initialprize);
+                element.setAttribute("data-price", newtotalprize);
+                document.getElementById(totalprizedata).innerHTML = "Rs " + newtotalprize
+
+            }
+            else if(action === 'minus')
+            {
+                if(currentQuantity > 1)
+                {
+                    document.getElementById(productId).value = currentQuantity - 1;
+                    var newtotalprize = parseInt(totalprize) - parseInt(initialprize);
+                    element.setAttribute("data-price", newtotalprize);
+                    document.getElementById(totalprizedata).innerHTML = "Rs " + newtotalprize
+                }
+            }
+            calculatePrice()
+        }
+    </script>
+
 </body>
 </html>

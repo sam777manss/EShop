@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ShoesApi.Migrations
 {
-    public partial class one : Migration
+    public partial class UserCart : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -96,6 +96,27 @@ namespace ShoesApi.Migrations
                         principalTable: "AddProductTable",
                         principalColumn: "ProductId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserCart",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ProuctColor = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductSize = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductSum = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserCart", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserCart_AddProductTable_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "AddProductTable",
+                        principalColumn: "ProductId");
                 });
 
             migrationBuilder.CreateTable(
@@ -204,33 +225,6 @@ namespace ShoesApi.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "UserCart",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ProuctColor = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProductSize = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProductSum = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserCart", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserCart_AddProductTable_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AddProductTable",
-                        principalColumn: "ProductId");
-                    table.ForeignKey(
-                        name: "FK_UserCart_AspNetUsers_AppUserId",
-                        column: x => x.AppUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -276,14 +270,9 @@ namespace ShoesApi.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserCart_AppUserId",
+                name: "IX_UserCart_ProductId",
                 table: "UserCart",
-                column: "AppUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserCart_UserId",
-                table: "UserCart",
-                column: "UserId");
+                column: "ProductId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -313,10 +302,10 @@ namespace ShoesApi.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AddProductTable");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "AddProductTable");
         }
     }
 }

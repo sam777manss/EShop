@@ -65,9 +65,18 @@ namespace ShoesApi.Controllers
         public async Task<IActionResult> UserCartDetails(string Uid)
         {
             UserCardModel userCartDetails = new UserCardModel();
-            userCartDetails = await product.UserCartDetails(Uid);
-            return Ok(userCartDetails);
-        }   
+            return Ok(await product.UserCartDetails(Uid));
+        }
+        #endregion
+
+        #region DeleteProduct
+        [HttpDelete]
+        [Route("DeleteProduct")]
+        public async Task<IActionResult> DeleteProduct(string UserCartTableId)
+        {
+            bool flag = await product.DeleteProduct(UserCartTableId);
+            return Ok(true);
+        }
         #endregion
     }
 }

@@ -27,6 +27,9 @@
     }
     public class ProductTable
     {
+        public ProductTable() {
+            productImgTables = new List<ProductImgTable>();
+        }
         public string? ProductId { get; set; }
         public string? ProductName { get; set; }
         public string? ProductDescription { get; set; }
@@ -42,6 +45,8 @@
         public string? Large { get; set; }
         public string? XL { get; set; }
         public string? XXL { get; set; }
+        public string? UserCartTableId { get; set; }
+        public List<ProductImgTable> productImgTables { get; set; } = new List<ProductImgTable>();
 
     }
 

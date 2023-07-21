@@ -12,8 +12,8 @@ using ShoesApi.DbContextFile;
 namespace ShoesApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230623064914_three")]
-    partial class three
+    [Migration("20230719090234_UserCart")]
+    partial class UserCart
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -233,6 +233,7 @@ namespace ShoesApi.Migrations
             modelBuilder.Entity("ShoesApi.DbContextFile.DBFiles.UserCart", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ProductId")
@@ -247,10 +248,12 @@ namespace ShoesApi.Migrations
                     b.Property<string>("ProuctColor")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("UserCart");
                 });
@@ -404,9 +407,7 @@ namespace ShoesApi.Migrations
                 {
                     b.HasOne("ShoesApi.DbContextFile.DBFiles.AddProductTable", "addProductTables")
                         .WithMany("UserCart")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductId");
 
                     b.Navigation("addProductTables");
                 });
