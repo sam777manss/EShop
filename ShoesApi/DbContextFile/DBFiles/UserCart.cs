@@ -13,7 +13,7 @@ namespace ShoesApi.DbContextFile.DBFiles
         public string? ProuctColor { get; set; }
         public string? ProductSize { get; set;}
         public string? ProductSum { get; set;}
-
+        public string? Quantity { get; set; }
         public AddProductTable? addProductTables { get; set; }
 
     }

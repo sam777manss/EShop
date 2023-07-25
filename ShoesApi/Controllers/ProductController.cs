@@ -59,6 +59,14 @@ namespace ShoesApi.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        [Route("GetCartCounter")]
+        public async Task<int> GetCartCounter(string Uid)
+        {
+            int result = await product.GetCartCounter(Uid);
+            return result;
+        }
+
         #region fetch products in user card
         [HttpGet]
         [Route("UserCartDetails")]

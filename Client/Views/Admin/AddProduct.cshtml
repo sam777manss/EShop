@@ -283,7 +283,7 @@
     {
         function AddProduct() {
             // Prevent the default form submission
-            debugger;
+            
             event.preventDefault();
             // Get the form element
             var form = document.getElementById('AddProductForm');
@@ -322,7 +322,7 @@
 
     // Handle category dropdown change event
     $("#ProductType").change(function () {
-        debugger;
+        
         var selectedCategory = $(this).val();
         var $ProductCategory = $("#ProductCategory");
 
@@ -363,7 +363,7 @@
 
     };
     $("#ProductCategory").change(function () {
-        debugger;
+        
         var selectedProductCategory = $(this).val();
         var $ProductCategoryType = $("#ProductCategoryType");
         // clear existing ProductCategoryDescription drop down options
@@ -399,7 +399,7 @@
         Sports: ["Shirts", "Pants", "Shoes"],
     };
     $("#ProductCategoryType").change(function () {
-        debugger;
+        
         var selectedProductCategoryType = $(this).val();
         var $ProductCategoryDescription = $("#ProductCategoryDescription");
         // clear existing ProductCategoryDescription drop down options

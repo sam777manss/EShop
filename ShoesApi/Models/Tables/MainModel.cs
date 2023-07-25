@@ -52,6 +52,7 @@ namespace ShoesApi.Models
         public string? XL { get; set; }
         public string? XXL { get; set; }
         public string? UserCartTableId { get; set; }
+        public string? Quantity { get; set; }
         public List<ProductImgTable>? productImgTables { get; set; } = new List<ProductImgTable>();
     }
 
@@ -70,5 +71,6 @@ namespace ShoesApi.Models
         public string? ProuctColor { get; set; }
         public string? ProductSize { get; set;}
         public string? ProductSum { get; set; }
+        public string? Quantity { get; set; }
     }
 }

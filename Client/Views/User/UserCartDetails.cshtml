@@ -48,6 +48,10 @@
 <body>
     <!-- Topbar Start -->
     <div class="container-fluid">
+        @*@Html.RenderAction("GetCartCounter");*@
+        
+
+
         <div class="row bg-secondary py-2 px-xl-5">
             <div class="col-lg-6 d-none d-lg-block">
                 <div class="d-inline-flex align-items-center">
@@ -146,7 +150,7 @@
                                                         <i class="fa fa-minus"></i>
                                                     </button>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm bg-secondary text-center" id="@product.ProductId" value="1">
+                                                <input type="text" class="form-control form-control-sm bg-secondary text-center quantity" id="@product.ProductId" value="@product.Quantity">
                                                 <div class="input-group-btn">
                                                 <button class="btn btn-sm btn-primary btn-plus" id="plus" onclick="Sum('plus', '@product.ProductId', 'ProductTotalPrize', '@product.Price')">
                                                         <i class="fa fa-plus"></i>
@@ -154,7 +158,10 @@
                                                 </div>
                                             </div>
                                         </td>
-                                    <td class="align-middle" id="ProductTotalPrize'@product.ProductId'" data-price="@product.Price">Rs @product.Price</td>
+                                    @{
+                                        var itemPrice = int.Parse(product.Price) * int.Parse(product.Quantity);
+                                    }
+                                    <td class="align-middle" id="ProductTotalPrize'@product.ProductId'" data-price="@itemPrice">Rs @itemPrice</td>
                                     <td class="align-middle">
                                         <a asp-controller="User" asp-action="DeleteProduct" asp-route-UserCartTableId="@product.UserCartTableId">
                                             <button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button>
@@ -179,7 +186,7 @@
                         <div class="card-header bg-secondary border-0">
                             <h4 class="font-weight-semi-bold m-0">Cart Summary</h4>
                         </div>
-                        <div class="card-body">
+@*                        <div class="card-body">
                             <div class="d-flex justify-content-between mb-3 pt-1">
                                 <h6 class="font-weight-medium">Subtotal</h6>
                                 <h6 class="font-weight-medium">$150</h6>
@@ -188,11 +195,11 @@
                                 <h6 class="font-weight-medium">Shipping</h6>
                                 <h6 class="font-weight-medium">$10</h6>
                             </div>
-                        </div>
+                        </div>*@
                         <div class="card-footer border-secondary bg-transparent">
                             <div class="d-flex justify-content-between mt-2">
                                 <h5 class="font-weight-bold">Total</h5>
-                                <h5 class="font-weight-bold" id="totalCost">$160</h5>
+                                <h5 class="font-weight-bold" id="CartTotal">Rs 0</h5>
                             </div>
                             <button class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
                         </div>
@@ -470,15 +477,15 @@
 
     <script>
         function calculatePrice(){
-            debugger;
-            let totalPrize = 0;
+            let totalPrize = 0, i = 0;
 
             const productElements = document.querySelectorAll('[id^="ProductTotalPrize"]')
             productElements.forEach((element) => {
                 const price = parseFloat(element.getAttribute('data-price'));
                 totalPrize += price;
-                document.getElementById("totalCost").innerHTML = "Rs " + totalPrize;
+               i++;
             });
+            document.getElementById("CartTotal").innerHTML = "Rs " + totalPrize;
         }
 
         window.onload = function () {
@@ -487,18 +494,16 @@
 
         function Sum(action, productId, findId, initialprize)
         {
-            debugger;
             var totalprizedata = findId + "'" + productId + "'";
             var element = document.getElementById(totalprizedata);
-            var totalprize = element.getAttribute("data-price");
+            var ItemTotalPrice = element.getAttribute("data-price");
 
             var currentQuantity = parseInt(document.getElementById(productId).value);
 
-            //currentQuantity = document.querySelector('.form-control form-control-sm bg-secondary text-center').value;
             if(action === 'plus')
             {
-                document.getElementById(productId).value = currentQuantity + 1;
-                var newtotalprize = parseInt(totalprize) + parseInt(initialprize);
+                document.getElementById(productId).value = currentQuantity + 1; // increment quantity
+                        var newtotalprize = parseInt(ItemTotalPrice) + parseInt(initialprize);
                 element.setAttribute("data-price", newtotalprize);
                 document.getElementById(totalprizedata).innerHTML = "Rs " + newtotalprize
 
@@ -508,7 +513,7 @@
                 if(currentQuantity > 1)
                 {
                     document.getElementById(productId).value = currentQuantity - 1;
-                    var newtotalprize = parseInt(totalprize) - parseInt(initialprize);
+                            var newtotalprize = parseInt(ItemTotalPrice) - parseInt(initialprize);
                     element.setAttribute("data-price", newtotalprize);
                     document.getElementById(totalprizedata).innerHTML = "Rs " + newtotalprize
                 }

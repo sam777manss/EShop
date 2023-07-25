@@ -91,22 +91,8 @@
                     </div>
                 </form>
             </div>
-            <div class="col-lg-3 col-6 text-right">
-                <a href="" class="btn border">
-                    <i class="fas fa-heart text-primary"></i>
-                    <span class="badge">0</span>
-                </a>
-                <a href="/User/UserCartDetails" class="btn border">
-                    <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge">
-                        @{
-                            string cartCounter = User.FindFirst(ClaimTypes.SerialNumber)?.Value;
-                            int values = string.IsNullOrEmpty(cartCounter) ? 0 : int.Parse(cartCounter);
-                        }
-                        @values
-                        </span>
-                </a>
-            </div>
+            @RenderSection("TotalItemsInCart", required:false)
+
         </div>
     </div>
     <!-- Topbar End -->
@@ -383,6 +369,8 @@
 
     <!-- Template Javascript -->
     <script src="~/clientfiles/js/main.js"></script>
+
+
 </body>
 
 </html>

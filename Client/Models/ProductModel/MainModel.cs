@@ -46,6 +46,7 @@
         public string? XL { get; set; }
         public string? XXL { get; set; }
         public string? UserCartTableId { get; set; }
+        public string? Quantity { get; set; }
         public List<ProductImgTable> productImgTables { get; set; } = new List<ProductImgTable>();
 
     }

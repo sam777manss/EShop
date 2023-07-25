@@ -45,6 +45,18 @@ namespace ShoesApi.Repositories
             return new List<AddProductTable>();
         }
 
+        public async Task<int> GetCartCounter(string Uid)
+        {
+            try {
+                int CartItems = context.UserCart.Where(cart => cart.UserId == Guid.Parse(Uid)).Count();
+                return CartItems;
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
+            }
+            return 0;
+        }
         public async Task<ProductInfo> InfoById(string ProductId)
         {
             try
@@ -184,7 +196,7 @@ namespace ShoesApi.Repositories
 
                 AspUsersTable aspUsersTable = new AspUsersTable();
                 userCardModel.aspUsersTable = _mapper.Map<AspUsersTable>(userData); // user data
-                var sss = context.UserCart.Where(c => c.UserId == Guid.Parse(userData.Id)).ToList();
+                //var sss = context.UserCart.Where(c => c.UserId == Guid.Parse(userData.Id)).ToList();
                 var data = (from ucart in context.UserCart
                             join product in context.AddProductTable on ucart.ProductId equals product.ProductId
                             //join images in context.ProductImageTable on product.ProductId equals images.ProductId
@@ -207,7 +219,8 @@ namespace ShoesApi.Repositories
                                     product.Large,
                                     product.XL,
                                     product.XXL,
-                                    ucart.Id
+                                    ucart.Id,
+                                    ucart.Quantity
                                 }, 
                                 UserCart = new
                                 {
@@ -216,7 +229,9 @@ namespace ShoesApi.Repositories
                                     ucart.ProductId,
                                     ucart.ProuctColor,
                                     ucart.ProductSize,
-                                    ucart.ProductSum
+                                    ucart.ProductSum,
+                                    ucart.Quantity
+                                    
                                 }, 
                                 //Pro = new
                                 //{
@@ -235,6 +250,7 @@ namespace ShoesApi.Repositories
                     ProductTable productTable = JsonConvert.DeserializeObject<ProductTable>(con);
                     UserCartTable userCart = JsonConvert.DeserializeObject<UserCartTable>(userCarts);
                     productTable.UserCartTableId = userCart.Id;
+                    productTable.Quantity = userCart.Quantity;
 
                     userCartTables.Add(JsonConvert.DeserializeObject<UserCartTable>(userCarts));
                     

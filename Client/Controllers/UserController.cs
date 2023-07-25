@@ -41,6 +41,38 @@ namespace Client.Controllers
             }
             return View(new ProductInfo());
         }
+        #region GetCartCounter
+        [HttpGet]
+        public async Task<IActionResult> GetCartCounter()
+        {
+            try
+            {
+
+                using (var client = new HttpClient())
+                {
+                    var user = HttpContext.User;
+                    var Uid = user.FindFirst(ClaimTypes.PrimarySid)?.Value;
+                    if(Uid != null)
+                    {
+                        client.BaseAddress = new Uri(URL);
+                        var response = await client.GetAsync("Product/GetCartCounter?Uid=" + Uid);
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        if (response.IsSuccessStatusCode)
+                        {
+                            return Json(responseContent);
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
+
+            }
+            return Json(0);
+        }
+        #endregion
 
         #region Add Product to User Cart
         [HttpPost]

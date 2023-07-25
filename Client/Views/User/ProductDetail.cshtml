@@ -130,7 +130,7 @@
                             <i class="fa fa-minus"></i>
                         </button>
                     </div>
-                    <input type="text" class="form-control bg-secondary text-center" value="1">
+                    <input type="text" class="form-control bg-secondary text-center" name="Quantity" value="1">
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-primary btn-plus" onclick="Sum('plus')">
                             <i class="fa fa-plus"></i>
@@ -421,7 +421,7 @@
 
 <script>
     function Sum(str) {
-        debugger;
+        
         var currentValue = parseInt(document.querySelector('.AmountDisplay').innerHTML);
         var initialValue = parseInt(document.querySelector("#initialValue").value)
 
@@ -455,7 +455,7 @@
     });
 
     function AddToCart() {
-        debugger;
+        
         // Prevent the default form submission
         event.preventDefault();
         // Get the form element
@@ -470,7 +470,7 @@
             contentType: false,
             processData: false,
             success: function (response) {
-                debugger;
+                
                 if (response.success) {
                     window.location.href = '/User/UserCartDetails';
                 } else {
