@@ -74,6 +74,33 @@ namespace Client.Controllers
         }
         #endregion
 
+        // start
+        #region functionSearchResults
+        [HttpGet]
+        public async Task<IActionResult> functionSearchResults(string input)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(URL);
+                    var response = await client.GetAsync("Product/functionSearchResults?input=" + input);
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return Json(responseContent);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
+
+            }
+            return Json(0);
+        }
+        #endregion
+        // ends
         #region Add Product to User Cart
         [HttpPost]
         public async Task<IActionResult> ProductDetail(AddToCart cart)
@@ -163,7 +190,7 @@ namespace Client.Controllers
         }
 
         #region fetch all the category data like mens cloth 
-        [Route("~/Categories/{category}")]
+        //[Route("~/Categories/{category}")]
         [HttpGet]
         public async Task<IActionResult> Categories(string category)
         {

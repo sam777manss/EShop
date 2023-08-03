@@ -35,7 +35,7 @@ namespace ShoesApi.Repositories
         {
             try
             {
-                List<AddProductTable> product = context.AddProductTable.Where(c => c.ProductCategory == category).ToList();
+                List<AddProductTable> product = context.AddProductTable.Where(c => c.ProductCategory == category || c.ProductName == category || c.ProductType == category || c.ProductCategoryDescription == category || c.ProductCategoryType == category).ToList();
                 return product;
             }
             catch (Exception ex)
@@ -125,6 +125,20 @@ namespace ShoesApi.Repositories
                 log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
             }
             return new StatusCodeResult(500);
+        }
+
+        public async Task<List<AddProductTable>> functionSearchResults(string input)
+        {
+            try
+            {
+                List<AddProductTable> product = context.AddProductTable.Where(c => c.ProductCategory == input || c.ProductName == input || c.ProductType == input || c.ProductCategoryDescription == input || c.ProductCategoryType == input).ToList();
+                return product;
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
+            }
+            return new List<AddProductTable>();
         }
 
         public async Task<bool> DeleteProduct(string UserCartTableId)

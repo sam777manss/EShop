@@ -60,6 +60,14 @@ namespace ShoesApi.Controllers
         }
 
         [HttpGet]
+        [Route("functionSearchResults")]
+        public async Task<IActionResult> functionSearchResults(string input)
+        {
+            List<AddProductTable> result = await product.functionSearchResults(input);
+            return Ok(result);
+        }
+
+        [HttpGet]
         [Route("GetCartCounter")]
         public async Task<int> GetCartCounter(string Uid)
         {
