@@ -6,6 +6,7 @@ namespace ShoesApi.Models
     public class AppUser : IdentityUser
     {
         public string? State { get; set; }
+        public string? City { get; set; }
         //[Required]
         [Display(Name = "Zip Code")]
         public string? Zip_Code { get; set; }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShoesApi.DbContextFile;
 
@@ -11,9 +12,10 @@ using ShoesApi.DbContextFile;
 namespace ShoesApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230807120237_UserCity")]
+    partial class UserCity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -214,16 +216,18 @@ namespace ShoesApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("AddProductTablesProductId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("ProductId")
-                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ProductImgId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("AddProductTablesProductId");
 
                     b.ToTable("ProductImageTable");
                 });
@@ -252,9 +256,12 @@ namespace ShoesApi.Migrations
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("addProductTablesProductId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("addProductTablesProductId");
 
                     b.ToTable("UserCart");
                 });
@@ -400,9 +407,7 @@ namespace ShoesApi.Migrations
                 {
                     b.HasOne("ShoesApi.DbContextFile.DBFiles.AddProductTable", "AddProductTables")
                         .WithMany("ProductImageTable")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AddProductTablesProductId");
 
                     b.Navigation("AddProductTables");
                 });
@@ -411,7 +416,7 @@ namespace ShoesApi.Migrations
                 {
                     b.HasOne("ShoesApi.DbContextFile.DBFiles.AddProductTable", "addProductTables")
                         .WithMany("UserCart")
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("addProductTablesProductId");
 
                     b.Navigation("addProductTables");
                 });

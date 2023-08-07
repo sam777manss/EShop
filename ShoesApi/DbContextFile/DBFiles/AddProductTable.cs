@@ -1,7 +1,10 @@
-﻿namespace ShoesApi.DbContextFile.DBFiles
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ShoesApi.DbContextFile.DBFiles
 {
     public partial class AddProductTable
     {
+        [Key]
         public Guid? ProductId { get; set; } // primary key
         public string? ProductName { get; set; }
         public string? ProductDescription { get; set; }

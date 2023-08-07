@@ -1,4 +1,6 @@
-﻿@{
+﻿@model UserCartDetails
+
+@{
     Layout = null;
 }
 
@@ -10,41 +12,41 @@
                 <h4 class="font-weight-semi-bold mb-4">Billing Address</h4>
                 <div class="row">
                     <div class="col-md-6 form-group">
-                        <label>First Name</label>
-                        <input class="form-control" type="text" placeholder="John">
+                        <label> First Name </label>
+                        <input class="form-control" type="text" placeholder="@Model.aspUsersTable.UserName" value="@Model.aspUsersTable.UserName">
                     </div>
                     <div class="col-md-6 form-group">
-                        <label>Last Name</label>
-                        <input class="form-control" type="text" placeholder="Doe">
+                        <label> Last Name </label>
+                        <input class="form-control" type="text" placeholder="@Model.aspUsersTable.UserSurname" value="@Model.aspUsersTable.UserSurname">
                     </div>
                     <div class="col-md-6 form-group">
-                        <label>E-mail</label>
-                        <input class="form-control" type="text" placeholder="example@email.com">
+                        <label> Email </label>
+                        <input class="form-control" type="text" placeholder="@Model.aspUsersTable.Email" value="@Model.aspUsersTable.Email">
                     </div>
                     <div class="col-md-6 form-group">
                         <label>Mobile No</label>
-                        <input class="form-control" type="text" placeholder="+123 456 789">
+                        <input class="form-control" type="text" placeholder="@Model.aspUsersTable.PhoneNumber">
                     </div>
                     <div class="col-md-6 form-group">
-                        <label>Address Line 1</label>
-                        <input class="form-control" type="text" placeholder="123 Street">
+                        <label>Address </label>
+                        <input class="form-control" type="text" placeholder="@Model.aspUsersTable.Address">
                     </div>
-                    <div class="col-md-6 form-group">
+@*                    <div class="col-md-6 form-group">
                         <label>Address Line 2</label>
                         <input class="form-control" type="text" placeholder="123 Street">
-                    </div>
+                    </div>*@
                     <div class="col-md-6 form-group">
                         <label>Country</label>
                         <select class="custom-select">
-                            <option selected>United States</option>
-                            <option>Afghanistan</option>
-                            <option>Albania</option>
-                            <option>Algeria</option>
+                            <option value="@Model.aspUsersTable.Country" selected>@Model.aspUsersTable.Country</option>
+                            <option value="Afghanistan">Afghanistan</option>
+                            <option value="Albania">Albania</option>
+                            <option value="Algeria">Algeria</option>
                         </select>
                     </div>
                     <div class="col-md-6 form-group">
                         <label>City</label>
-                        <input class="form-control" type="text" placeholder="New York">
+                        <input class="form-control" type="text" placeholder="@Model.aspUsersTable.City">
                     </div>
                     <div class="col-md-6 form-group">
                         <label>State</label>
