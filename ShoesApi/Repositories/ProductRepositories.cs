@@ -294,53 +294,6 @@ namespace ShoesApi.Repositories
                 userCardModel.userCartTables.AddRange(userCartTables);
                 string jsonData = JsonConvert.SerializeObject(userCardModel);
                 return jsonData;
-                //return JsonSerializer.Serialize(data, options); 
-                
-                //var data2 = context.UserCart
-                //            .Include(ucart => ucart.addProductTables) // Eager load AddProductTable
-                //            .Include(ucart => ucart.addProductTables.ProductImageTable) // Eager load ProductImageTable
-                //            .Where(ucart => ucart.UserId == Guid.Parse(Uid))
-                //            .ToList();
-
-
-                //ProductTable productTables = new ProductTable();
-                //List<AddProductTable> productTable = data.Select(up => up.Product).ToList();
-
-                //foreach(var product in productTable)
-                //{
-                //    productTables.ProductId = product.ProductId.ToString();
-                //    productTables.ProductName = product.ProductName;
-                //    productTables.ProductDescription = product.ProductDescription;
-                //    productTables.ProductType = product.ProductType;
-                //    productTables.ProductCategory = product.ProductCategory;
-                //    productTables.ProductCategoryDescription = product.ProductCategoryDescription;
-                //    productTables.ProductCategoryType = product.ProductCategoryType;
-                //    productTables.VendorEmail = product.VendorEmail;
-                //    productTables.MainImage = product.MainImage;
-                //    productTables.Price = product.Price;
-                //    productTables.Small = product.Small;
-                //    productTables.Medium = product.Medium;
-                //    productTables.Large = product.Large;
-                //    productTables.XL = product.XL;
-                //    productTables.XXL = product.XXL;
-
-                //    userCardModel.productTable.Add(productTables);
-                //}
-
-                //UserCartTable userCartTables = new UserCartTable();
-                //List<UserCart> userCarts = data.Select(up => up.UserCart).ToList();
-                //foreach (var userCart in userCarts)
-                //{
-                //    userCartTables.UserId = userCart.Id.ToString();
-                //    userCartTables.UserId = userCart.UserId.ToString();
-                //    userCartTables.ProductId = userCart.ProductId.ToString();
-                //    userCartTables.ProuctColor = userCart.ProuctColor;
-                //    userCartTables.ProductSize = userCart.ProductSize;
-                //    userCartTables.ProductSum = userCart.ProductSum;
-
-                //    userCardModel.userCartTables.Add(userCartTables);
-                //}
-                //return userCardModel;
             }
             catch (Exception ex)
             {
@@ -349,5 +302,116 @@ namespace ShoesApi.Repositories
             return new UserCardModel();
         }
 
+        public async Task<Object> Checkout(string Uid)
+        {
+            try
+            {
+                AppUser userData = await userManager.FindByIdAsync(Uid);
+                UserCardModel userCardModel = new UserCardModel();
+                List<ProductTable> productTables = new List<ProductTable>(); // all
+                ProductTable insproductTables = new ProductTable(); // individual
+
+                List<UserCartTable>? userCartTables = new List<UserCartTable>();
+
+                //userCardModel.productTable.ProductImgTable 
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve
+                };
+
+                AspUsersTable aspUsersTable = new AspUsersTable();
+                userCardModel.aspUsersTable = _mapper.Map<AspUsersTable>(userData); // user data
+                //var sss = context.UserCart.Where(c => c.UserId == Guid.Parse(userData.Id)).ToList();
+                var data = (from ucart in context.UserCart
+                            join product in context.AddProductTable on ucart.ProductId equals product.ProductId
+                            //join images in context.ProductImageTable on product.ProductId equals images.ProductId
+                            where ucart.UserId == Guid.Parse(Uid)
+                            select new
+                            {
+                                Product = new
+                                {
+                                    product.ProductId,
+                                    product.ProductName,
+                                    product.ProductDescription,
+                                    product.ProductType,
+                                    product.ProductCategory,
+                                    product.ProductCategoryDescription,
+                                    product.ProductCategoryType,
+                                    product.VendorEmail,
+                                    product.MainImage,
+                                    product.Price,
+                                    product.Small,
+                                    product.Medium,
+                                    product.Large,
+                                    product.XL,
+                                    product.XXL,
+                                    ucart.Id,
+                                    ucart.Quantity
+                                },
+                                UserCart = new
+                                {
+                                    ucart.Id,
+                                    ucart.UserId,
+                                    ucart.ProductId,
+                                    ucart.ProuctColor,
+                                    ucart.ProductSize,
+                                    ucart.ProductSum,
+                                    ucart.Quantity
+
+                                },
+                                //Pro = new
+                                //{
+                                //    images.ProductId,
+                                //    images.ProductImgId,
+                                //    images.ImageUrl
+                                //}
+                            }).ToList();
+
+                foreach (var ucart in data)
+                {
+                    string con = JsonConvert.SerializeObject(ucart.Product);
+                    string userCarts = JsonConvert.SerializeObject(ucart.UserCart);
+
+
+                    ProductTable productTable = JsonConvert.DeserializeObject<ProductTable>(con);
+                    UserCartTable userCart = JsonConvert.DeserializeObject<UserCartTable>(userCarts);
+                    productTable.UserCartTableId = userCart.Id;
+                    productTable.Quantity = userCart.Quantity;
+
+                    userCartTables.Add(JsonConvert.DeserializeObject<UserCartTable>(userCarts));
+
+
+                    //productTable.productImgTables = new List<ProductImgTable>();
+
+                    //userCardModel.productTable.Add(productTable);
+                    insproductTables = productTable;
+                    var info = (from image in context.ProductImageTable
+                                where image.ProductId == Guid.Parse(productTable.ProductId)
+                                select new
+                                {
+                                    image.ProductId,
+                                    image.ProductImgId,
+                                    image.ImageUrl,
+                                }).ToList();
+                    foreach (var image in info)
+                    {
+                        string img = JsonConvert.SerializeObject(image);
+                        ProductImgTable? productImageTable = JsonConvert.DeserializeObject<ProductImgTable>(img);
+                        insproductTables.productImgTables.Add(productImageTable);
+                    }
+                    string s = "dff";
+                    productTables.Add(insproductTables);
+                }
+                userCardModel.productTable.AddRange(productTables);
+                userCardModel.userCartTables.AddRange(userCartTables);
+                string jsonData = JsonConvert.SerializeObject(userCardModel);
+                return jsonData;
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
+            }
+            return new UserCardModel();
+        }
     }
 }

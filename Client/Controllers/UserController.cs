@@ -189,6 +189,46 @@ namespace Client.Controllers
             return View(new List<UserCartDetails>());
         }
 
+        #region Contact Info
+        [HttpGet]
+        public async Task<IActionResult> Contact()
+        {
+            return View();
+        }
+        #endregion
+
+        #region user checkout 
+        [HttpGet]
+        public async Task<IActionResult> Checkout()
+        {
+            if (ModelState.IsValid)
+            {
+                var user = HttpContext.User;
+                var Uid = user.FindFirst(ClaimTypes.PrimarySid)?.Value;
+                if (Uid != null)
+                {
+                    using (var client = new HttpClient())
+                    {
+                        client.BaseAddress = new Uri(URL);
+                        var response = await client.GetAsync("Product/Checkout?Uid=" + Uid);
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        UserCartDetails? users = JsonConvert.DeserializeObject<UserCartDetails>(responseContent);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            return View(users);
+                        }
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("LoginPage", "Authenticate");
+                }
+                return View(new List<UserCartDetails>());
+            }
+            return View(new List<UserCartDetails>());
+        }
+        #endregion
+
         #region fetch all the category data like mens cloth 
         //[Route("~/Categories/{category}")]
         [HttpGet]

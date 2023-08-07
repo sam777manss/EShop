@@ -51,6 +51,8 @@ namespace ShoesApi.Controllers
             return BadRequest();
         }
         #endregion
+
+
         [HttpPost]
         [Route("ProductDetail")]
         public async Task<IActionResult> ProductDetail(UserCart cart)
@@ -59,6 +61,7 @@ namespace ShoesApi.Controllers
             return Ok();
         }
 
+        #region user searched
         [HttpGet]
         [Route("functionSearchResults")]
         public async Task<IActionResult> functionSearchResults(string input)
@@ -66,7 +69,9 @@ namespace ShoesApi.Controllers
             List<AddProductTable> result = await product.functionSearchResults(input);
             return Ok(result);
         }
+        #endregion
 
+        #region Items in Cart 
         [HttpGet]
         [Route("GetCartCounter")]
         public async Task<int> GetCartCounter(string Uid)
@@ -74,6 +79,7 @@ namespace ShoesApi.Controllers
             int result = await product.GetCartCounter(Uid);
             return result;
         }
+        #endregion
 
         #region fetch products in user card
         [HttpGet]
@@ -84,6 +90,17 @@ namespace ShoesApi.Controllers
             return Ok(await product.UserCartDetails(Uid));
         }
         #endregion
+
+        #region fetch user Checkout
+        [HttpGet]
+        [Route("Checkout")]
+        public async Task<IActionResult> Checkout(string Uid)
+        {
+            UserCardModel userCartDetails = new UserCardModel();
+            return Ok(await product.Checkout(Uid));
+        }
+        #endregion
+
 
         #region DeleteProduct
         [HttpDelete]
