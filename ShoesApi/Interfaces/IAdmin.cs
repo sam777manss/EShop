@@ -14,5 +14,7 @@ namespace ShoesApi.Interfaces
 
         public Task<IActionResult> SaveEdits(AppUser User);
 
+        public Task<bool> UserInfoUpdate(string Uid, AppUser appUser);
+
     }
 }

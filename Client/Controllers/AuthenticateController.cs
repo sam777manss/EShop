@@ -24,21 +24,39 @@ namespace Client.Controllers
 
 
         #region Cookie Setup (Set CartCounter, Roles, UserImage, id)
-        public async Task CookiesSetUp(string UserId, List<string> roles, string username, string email, string user_image, string cart)
+        public async Task CookiesSetUp(string UserId, List<string> roles, string username, string email, string user_image, string cart, AspUsersTable Data)
         {
+
             try
             {
+
                 // cookies set start
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.PrimarySid, UserId),
-                    new Claim(ClaimTypes.Email, email),
-                    new Claim(ClaimTypes.Name, username),
-                    new Claim(ClaimTypes.SerialNumber, cart)
+                    new Claim(ClaimTypes.Email, Data.Email),
+                    new Claim(ClaimTypes.Name, Data.UserName),
+                    new Claim(ClaimTypes.SerialNumber, cart),
                 };
-                if(!string.IsNullOrEmpty(user_image))
-                {
+                if (!string.IsNullOrEmpty(Data.PhoneNumber))
+                    claims.Add(new Claim(ClaimTypes.MobilePhone, Data.PhoneNumber));
+                if (!string.IsNullOrEmpty(Data.State))
+                    claims.Add(new Claim(ClaimTypes.StateOrProvince, Data.State));
+                if (!string.IsNullOrEmpty(Data.Address))
+                    claims.Add(new Claim(ClaimTypes.StreetAddress, Data.Address));
+                if (!string.IsNullOrEmpty(Data.Country))
+                    claims.Add(new Claim(ClaimTypes.Country, Data.Country));
+                if (!string.IsNullOrEmpty(user_image))
                     claims.Add(new Claim(ClaimTypes.Uri, user_image));
+                if (!string.IsNullOrEmpty(Data.Zip_Code))
+                {
+                    var zipCodeClaim = new Claim("http://schemas.myapp.com/claims/zipCode", Data.Zip_Code); // Zip Code
+                    claims.Add(zipCodeClaim);
+                }
+                if (!string.IsNullOrEmpty(Data.City))
+                {
+                    var cityClaim = new Claim("http://schemas.myapp.com/claims/city", Data.City);
+                    claims.Add(cityClaim);
                 }
                 foreach (var role in roles)
                 {
@@ -77,14 +95,16 @@ namespace Client.Controllers
                     {
                         var responseContent = await response.Content.ReadAsStringAsync();
                         CommonIndex? Data = JsonConvert.DeserializeObject<CommonIndex>(responseContent);
+
                         if (Data?.UserId != null)
                         {
                             var userRoles = new List<string>();
                             var user_name = string.Empty;
                             var email = string.Empty;
-
+                            AspUsersTable? UserData;
                             if (Data.Roles.Contains("Admin"))
                             {
+                                UserData = Data?.Admin;
                                 userRoles.Add("Admin");
                                 userRoles.Add("User");
                                 user_name = Data?.Admin?.UserName;
@@ -92,12 +112,13 @@ namespace Client.Controllers
                             }
                             else
                             {
+                                UserData = Data?.User;
                                 userRoles.Add("User");
                                 user_name = Data?.User?.UserName;
                                 email = Data?.User?.Email;
                             }
 
-                            await CookiesSetUp(Data.UserId, userRoles, user_name, email, Data.imageUrl, Data.cart);
+                            await CookiesSetUp(Data.UserId, userRoles, user_name, email, Data.imageUrl, Data.cart, UserData);
                             // cookies set ends
                             if (Data.User != null && Data.Roles != null)
                             {

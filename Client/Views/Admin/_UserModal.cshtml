@@ -4,7 +4,7 @@
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
 
     <div class="d-flex align-items-start align-items-sm-center gap-4">
-        <img src="~/ImagesFolder/@Model.imageUrl" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar">
+        <img src="~/ImagesFolder/@Model.imageUrl" alt="user-avatar"  class="d-block rounded" height="100" width="100" id="uploadedAvatar">
         <div class="button-wrapper">
             <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
                 <span class="d-none d-sm-block">Upload new photo</span>
@@ -98,3 +98,99 @@
         <button type="submit" class="btn btn-primary" onclick="SaveEdits()">Save changes</button>
     </div>
 </form>
+
+<script>
+    document.getElementById('upload').addEventListener('change', function (event) {
+        var selectedFile = event.target.files[0]; // Get the first selected file
+
+        if (selectedFile) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById('uploadedAvatar').src = e.target.result;
+            };
+
+            reader.readAsDataURL(selectedFile);
+        }
+    });
+
+    // validation iziToast start + post ajax
+    try { 
+        function SaveEdits() {
+            // Prevent the default form submission
+            event.preventDefault();
+            var msg = "";
+            // check if product image is uploaded or not
+
+            if (document.getElementById("firstName").value == "") {
+                msg = "Enter First Name";
+            }
+            else if (document.getElementById("lastName").value == "") {
+                msg = "Enter Last Name";
+            }
+            else if (document.getElementById("email").value == "") {
+                msg = "Enter Email";
+            }
+            else if (document.getElementById("phoneNumber").value == "") {
+                msg = "Enter Phone Number";
+            }
+            else if (document.getElementById("address").value == "") {
+                msg = "Enter Address";
+            }
+            else if (document.getElementById("state").value == "") {
+                msg = "Enter State";
+            }
+            else if (document.getElementById("zipCode").value == "") {
+                msg = "Enter Zip Code";
+            }
+            else if (document.getElementById("country").value == "") {
+                msg = "Enter Country";
+            }
+            if (msg !== "") {
+                iziToast.show({
+                    theme: 'dark',
+                    icon: 'icon-person',
+                    title: 'Hey',
+                    message: "Please " + msg,
+                    position: 'center', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter
+                    progressBarColor: 'rgb(0, 255, 184)',
+                });
+            }
+
+            else {
+                debugger;
+                // Prevent the default form submission
+                event.preventDefault();
+                // Get the form element
+                var form = document.getElementById('formAccountSettings');
+                var formData = new FormData(form);
+
+                // Make an Ajax request
+                $.ajax({
+                    url: '/Admin/SaveEdits',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        // Handle the success response
+                        console.log(response);
+                        $("#partialModal").find(".modal-body").html(response);
+                        $("#partialModal").modal('show');
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle the error response
+                        console.error(error);
+                    }
+                });
+
+            }
+
+        }
+    }
+    catch (err) {
+        console.log(err.message);
+    }
+    // validation izizToast ends
+
+</script>

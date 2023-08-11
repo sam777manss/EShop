@@ -26,6 +26,16 @@ namespace ShoesApi.Controllers
         }
         #endregion
 
+        #region Product Quantity
+        [HttpGet]
+        [Route("ProductQuantity")]
+        public async Task<bool> ProductQuantity(string ProductId, string Quantity, string UserId)
+        {
+            bool flag = await product.ProductQuantity(ProductId, Quantity, UserId);
+            return flag;
+        }
+        #endregion
+
         #region fetch product info by id
         [HttpGet]
         [Route("InfoById")]
@@ -58,6 +68,18 @@ namespace ShoesApi.Controllers
         public async Task<IActionResult> ProductDetail(UserCart cart)
         {
             IActionResult result = await product.ProductDetail(cart);
+            if (result is StatusCodeResult statusCodeResult)
+            {
+                if (statusCodeResult.StatusCode == 406)
+                {
+                    var errorResponse = new
+                    {
+                        Message = "The requested content type is not supported."
+                    };
+
+                    return BadRequest(errorResponse);
+                }
+            }
             return Ok();
         }
 

@@ -16,5 +16,6 @@ namespace ShoesApi.Interfaces
         public Task<int> GetCartCounter(string Uid);
         public Task<List<AddProductTable>> functionSearchResults(string input);
         public Task<Object> Checkout(string Uid);
+        public Task<bool> ProductQuantity(string ProductId, string Quantity, string UserId);
     }
 }

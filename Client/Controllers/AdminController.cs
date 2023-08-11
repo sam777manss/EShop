@@ -87,19 +87,33 @@ namespace Client.Controllers
                 {
                     using (var client = new HttpClient())
                     {
-                        // Send the image name to web api
-                        appUser.imageUrl = appUser.imageFile?.FileName;
-                        client.BaseAddress = new Uri(URL + "Admin/SaveEdits");
-                        var response = await client.PostAsJsonAsync("", appUser);
-                        // Handle the response from the Web API controller
-                        if (response.IsSuccessStatusCode)
+                        var appUser1 = HttpContext.User;
+                        var ImageUrl = appUser1.FindFirst(ClaimTypes.Uri)?.Value;
+                        if (appUser.imageFile == null) // user not uploading and not have any image
                         {
+                            if (ImageUrl == null) // user not have any image previously
+                                ModelState.AddModelError("", "Failed to upload the image");
+                            else if (ImageUrl != null)
+                                appUser.imageUrl = ImageUrl; 
+                        }
+                        else
+                        {
+                            appUser.imageUrl = appUser.imageFile?.FileName; // user image
                             var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "ImagesFolder", appUser.imageFile.FileName);
                             // Save the image to the specified path
                             using (var stream = new FileStream(imagePath, FileMode.Create))
                             {
                                 appUser.imageFile.CopyTo(stream);
                             }
+                        }
+                        // Send the image name to web api
+
+                        client.BaseAddress = new Uri(URL + "Admin/SaveEdits");
+                        var response = await client.PostAsJsonAsync("", appUser);
+                        // Handle the response from the Web API controller
+                        if (response.IsSuccessStatusCode)
+                        {
+
                             return PartialView("_UserModal", appUser);
                         }
                         else

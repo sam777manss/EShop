@@ -1,8 +1,10 @@
 ﻿using Client.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
 using Serilog;
 using System.Security.Claims;
+using System.Text;
 
 namespace Client.Controllers
 {
@@ -14,6 +16,35 @@ namespace Client.Controllers
         {
             return View();
         }
+        public IActionResult AddUserShippingInfo()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> UserInfoUpdate(AppUser appUser)
+        {
+            var user = HttpContext.User;
+            var Uid = user.FindFirst(ClaimTypes.PrimarySid)?.Value;
+
+            // Serialize appUser to JSON
+            var appUserJson = JsonConvert.SerializeObject(appUser);
+            var content = new StringContent(appUserJson, Encoding.UTF8, "application/json");
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(URL);
+                var requestUrl = $"Admin/UserInfoUpdate?Uid={Uid}";
+
+                var response = await client.PutAsync(requestUrl, content);
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                ProductInfo users = JsonConvert.DeserializeObject<ProductInfo>(responseContent);
+                if (response.IsSuccessStatusCode)
+                {
+                    return View(users);
+                }
+            }
+            return RedirectToAction("LoginPage", "Authenticate");
+        }
 
         [Route("~/ProductDetail/{ProductId}")]
         [HttpGet]
@@ -21,18 +52,23 @@ namespace Client.Controllers
         {
             try
             {
-                using (var client = new HttpClient())
+                var user = HttpContext.User;
+                var userId = user.FindFirst(ClaimTypes.PrimarySid)?.Value;
+                if (userId != null)
                 {
-                    client.BaseAddress = new Uri(URL);
-                    var response = await client.GetAsync("Product/InfoById?ProductId=" + ProductId); // using concatenation
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    ProductInfo users = JsonConvert.DeserializeObject<ProductInfo>(responseContent);
-                    if (response.IsSuccessStatusCode)
+                    using (var client = new HttpClient())
                     {
-                        return View(users);
+                        client.BaseAddress = new Uri(URL);
+                        var response = await client.GetAsync("Product/InfoById?ProductId=" + ProductId); // using concatenation
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        ProductInfo users = JsonConvert.DeserializeObject<ProductInfo>(responseContent);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            return View(users);
+                        }
                     }
                 }
-                return View(new ProductInfo()); // Return an empty list if the user is not an admin or an error occurs
+                return RedirectToAction("LoginPage", "Authenticate"); ; // Return an empty list if the user is not an admin or an error occurs
             }
             catch (Exception ex)
             {
@@ -52,7 +88,7 @@ namespace Client.Controllers
                 {
                     var user = HttpContext.User;
                     var Uid = user.FindFirst(ClaimTypes.PrimarySid)?.Value;
-                    if(Uid != null)
+                    if (Uid != null)
                     {
                         client.BaseAddress = new Uri(URL);
                         var response = await client.GetAsync("Product/GetCartCounter?Uid=" + Uid);
@@ -148,7 +184,7 @@ namespace Client.Controllers
                         return RedirectToAction("UserCartDetails", "User");
                     }
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -166,7 +202,7 @@ namespace Client.Controllers
             {
                 var user = HttpContext.User;
                 var Uid = user.FindFirst(ClaimTypes.PrimarySid)?.Value;
-                if(Uid != null)
+                if (Uid != null)
                 {
                     using (var client = new HttpClient())
                     {
@@ -176,7 +212,7 @@ namespace Client.Controllers
                         UserCartDetails? users = JsonConvert.DeserializeObject<UserCartDetails>(responseContent);
                         if (response.IsSuccessStatusCode)
                         {
-                          return View(users);
+                            return View(users);
                         }
                     }
                 }
@@ -196,6 +232,35 @@ namespace Client.Controllers
             return View();
         }
         #endregion
+
+        #region Quantity Updated 
+        [HttpGet]
+        public async Task<bool> ProductQuantity(string ProductId, string Quantity)
+        {
+
+            var user = HttpContext.User;
+            var Uid = user.FindFirst(ClaimTypes.PrimarySid)?.Value;
+            if (Uid != null)
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(URL);
+                    var response = await client.GetAsync("Product/ProductQuantity?ProductId=" + ProductId + "&Quantity=" + Quantity + "&UserId=" + Uid);
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    UserCartDetails? users = JsonConvert.DeserializeObject<UserCartDetails>(responseContent);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                return false;
+            }
+            return true;
+        }
+        #endregion 
 
         #region user checkout 
         [HttpGet]

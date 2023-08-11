@@ -140,10 +140,25 @@ namespace ShoesApi.Repositories
             }
             return new List<AddProductTable>();
         }
+        public async Task<bool> ProductQuantity(string ProductId, string Quantity, string UserId)
+        {
+            try
+            {
+                UserCart? userCart = context.UserCart.Where(product => product.ProductId == Guid.Parse(ProductId) && product.UserId == Guid.Parse(UserId)).FirstOrDefault();
+                userCart.Quantity = Quantity;
+                 context.UserCart.Update(userCart);
+                await context.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
+            }
+            return true;
+        }
 
         public async Task<bool> DeleteProduct(string UserCartTableId)
         {
-            UserCart userCart = context.UserCart.Where(product => product.Id == Guid.Parse(UserCartTableId)).FirstOrDefault();
+            UserCart? userCart = context.UserCart.Where(product => product.Id == Guid.Parse(UserCartTableId)).FirstOrDefault();
             context.UserCart.Remove(userCart);
             context.SaveChanges();
             return true;

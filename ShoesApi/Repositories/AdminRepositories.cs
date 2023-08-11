@@ -80,6 +80,36 @@ namespace ShoesApi.Repositories
             return new List<AspUsersTable>();
         }
 
+        #region
+        public async Task<bool> UserInfoUpdate(string Uid, AppUser appUser)
+        {
+            try
+            {
+                AppUser appUser1 = await userManager.FindByIdAsync(Uid);
+                appUser1.UserName = appUser.UserName;
+                appUser1.Email = appUser.Email;
+                appUser1.Address = appUser.Address;
+                appUser1.PhoneNumber = appUser.PhoneNumber;
+                appUser1.Zip_Code = appUser.Zip_Code;
+                appUser1.State = appUser.State;
+                appUser1.Country = appUser.Country;
+
+                IdentityResult result = await userManager.UpdateAsync(appUser1);
+                if(result.Succeeded)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
+            }
+            return false;
+        }
+        #endregion
+
+
         public async Task<AppUser> Edit(string Id)
         {
             try

@@ -64,7 +64,16 @@ namespace ShoesApi.Controllers
             return new StatusCodeResult(200);
         }
         #endregion
-        
+
+        #region 
+        [HttpPut]
+        [Route("UserInfoUpdate")]
+        public async Task<bool> UserInfoUpdate(string Uid, AppUser appUser)
+        {
+            bool flag = await admin.UserInfoUpdate(Uid, appUser);
+            return flag;
+        }
+        #endregion
 
     }
 }

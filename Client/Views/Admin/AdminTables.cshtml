@@ -176,30 +176,4 @@
         });
     }
 
-    function SaveEdits() {
-        // Prevent the default form submission
-        event.preventDefault();
-        // Get the form element
-        var form = document.getElementById('formAccountSettings');
-
-        // Create a new FormData object
-        var formData = new FormData(form);    // Make an Ajax request
-        $.ajax({
-            url: '/Admin/SaveEdits',
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function (response) {
-                // Handle the success response
-                console.log(response);
-                $("#partialModal").find(".modal-body").html(response);
-                $("#partialModal").modal('show');
-            },
-            error: function (xhr, status, error) {
-                // Handle the error response
-                console.error(error);
-            }
-        });
-    }
 </script>

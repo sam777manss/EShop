@@ -53,6 +53,10 @@
 
     <script src="~/adminfiles/assets/js/config.js"></script>
 
+    <!-- izitoast start js and css starts -->
+    <link href="~/css/izitoast.min.css" rel="stylesheet" />
+    <script src="~/js/izitoast.min.js"></script>
+    <!-- izitoast start js and css ends -->
 
 </head>
 
@@ -128,7 +132,7 @@
                     </li>
 
                     <!-- Layouts -->
-                    <li class="menu-item">
+@*                    <li class="menu-item">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                             <i class="menu-icon tf-icons bx bx-layout"></i>
                             <div data-i18n="Layouts">Layouts</div>
@@ -161,7 +165,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </li>*@
 
                     <li class="menu-header small text-uppercase">
                         <span class="menu-header-text">Pages</span>
@@ -171,7 +175,7 @@
                             <i class="menu-icon tf-icons bx bx-dock-top"></i>
                             <div data-i18n="Account Settings">Account Settings</div>
                         </a>
-                        <ul class="menu-sub">
+                        <ul class="menu-sub" style="color: grey; pointer-events: none;">
                             <li class="menu-item">
                                 <a href="/Admin/AdminAccount" class="menu-link"> <!-- Admin Account Page -->
                                     <div data-i18n="Account">Account</div>
@@ -194,7 +198,7 @@
                             <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
                             <div data-i18n="Authentications">Authentications</div>
                         </a>
-                        <ul class="menu-sub">
+                        <ul class="menu-sub" style="color: grey; pointer-events: none;">
                             <li class="menu-item">
                                 <a href="auth-login-basic.html" class="menu-link" target="_blank">
                                     <div data-i18n="Basic">Login</div>

@@ -31,6 +31,11 @@
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js" **important**></script>
 
+    <!-- izitoast start js and css starts -->
+    <link href="~/css/izitoast.min.css" rel="stylesheet" />
+    <script src="~/js/izitoast.min.js"></script>
+    <!-- izitoast start js and css ends -->
+
 </head>
 
 <body>
@@ -143,8 +148,8 @@
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
                             <a href="/User/index" class="nav-item nav-link active">Home</a>
-                            <a href="shop.html" class="nav-item nav-link">Shop</a>
-                            <a href="detail.html" class="nav-item nav-link">Shop Detail</a>
+                            @*<a href="shop.html" class="nav-item nav-link">Shop</a>*@
+                            <a href="detail.html" class="nav-item nav-link">Checkout</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
                                 <div class="dropdown-menu rounded-0 m-0">
@@ -219,7 +224,7 @@
         <div class="row px-xl-5">
             <div class="col-md-6 pb-4">
                 <div class="position-relative bg-secondary text-center text-md-right text-white mb-2 py-5 px-5">
-                    <img src="~/clientfiles/img/offer-1.png" alt="">
+                    <img src="" alt="">
                     <div class="position-relative" style="z-index: 1;">
                         <h5 class="text-uppercase text-primary mb-3">20% off the all order</h5>
                         <h1 class="mb-4 font-weight-semi-bold">Spring Collection</h1>
@@ -229,7 +234,7 @@
             </div>
             <div class="col-md-6 pb-4">
                 <div class="position-relative bg-secondary text-center text-md-left text-white mb-2 py-5 px-5">
-                    <img src="~/clientfiles/img/offer-2.png" alt="">
+                    <img src="" alt="">
                     <div class="position-relative" style="z-index: 1;">
                         <h5 class="text-uppercase text-primary mb-3">20% off the all order</h5>
                         <h1 class="mb-4 font-weight-semi-bold">Winter Collection</h1>
@@ -386,7 +391,6 @@
         });
 
         function functionSearchResults(category) {
-            debugger
             //window.location.href = '/User/Categories?category=' + encodeURIComponent(category);
             fetch(`/User/Categories?category=${category}`, {
                 method: "GET",
