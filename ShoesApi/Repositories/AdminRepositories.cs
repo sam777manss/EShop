@@ -2,6 +2,7 @@
 using log4net;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ShoesApi.DbContextFile;
 using ShoesApi.DbContextFile.DBFiles;
 using ShoesApi.Interfaces;
@@ -59,7 +60,7 @@ namespace ShoesApi.Repositories
                         foreach (var user in users)
                         {
                             AspUsersTable data = _mapper.Map<AspUsersTable>(user);
-                            //AdminIndex data = new AdminIndex()
+                            //productIndex data = new productIndex()
                             //{
                             //    Id = user.Id,
                             //    Name = user.UserName,
@@ -79,6 +80,22 @@ namespace ShoesApi.Repositories
             }
             return new List<AspUsersTable>();
         }
+
+        public async Task<List<AddProductTable>> ProductTables()
+        {
+            try
+            {
+                List<AddProductTable> product = context.AddProductTable.ToList();
+                return product;
+
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
+            }
+            return new List<AddProductTable>();
+        }
+
 
         #region
         public async Task<bool> UserInfoUpdate(string Uid, AppUser appUser)
@@ -127,7 +144,23 @@ namespace ShoesApi.Repositories
             }
             return new AppUser();
         }
+        public async Task<AddProductTable> EditProduct(string Id)
+        {
+            try
+            {
+                AddProductTable product =  context.AddProductTable.Where(p => p.ProductId == Guid.Parse(Id)).FirstOrDefault();
 
+                if (product != null)
+                {
+                    return product;
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
+            }
+            return new AddProductTable();
+        }
         public async Task<bool> Delete(string Id)
         {
             try
@@ -142,6 +175,39 @@ namespace ShoesApi.Repositories
                     }
                     return false;
                 }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
+            }
+            return false;
+        }
+
+        public async Task<bool> DeleteProduct(string Id)
+        {
+            try
+            {
+                AddProductTable? Product = context.AddProductTable.Where(product => product.ProductId == Guid.Parse(Id)).FirstOrDefault();
+                if (Product != null)
+                {
+                    // Delete all associated ProductImageTable entities
+                    var productImageTables = await context.ProductImageTable.Where(p => p.ProductId == Guid.Parse(Id)).ToListAsync();
+                    foreach (var productImageTable in productImageTables)
+                    {
+                        context.ProductImageTable.Remove(productImageTable);
+                    }
+
+                    var userCart = await context.UserCart.Where(c => c.ProductId == Guid.Parse(Id)).ToListAsync();
+                    foreach (var userCartTable in userCart)
+                    {
+                        context.UserCart.Remove(userCartTable);
+                    }
+
+                    context.AddProductTable.Remove(Product);
+                    await context.SaveChangesAsync();
+                    return true;
+                }
+
             }
             catch (Exception ex)
             {

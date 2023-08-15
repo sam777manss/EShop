@@ -1,6 +1,6 @@
 ﻿namespace Client.Models
 {
-    public class AdminIndex
+    public class productIndex
     {
         public string? Id { get; set; }
         public string? Name { get; set; }

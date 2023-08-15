@@ -12,6 +12,7 @@ using ShoesApi.Models.ProductModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace ShoesApi.Repositories
 {
@@ -31,18 +32,33 @@ namespace ShoesApi.Repositories
             this.context = context;
         }
 
-        public async Task<List<AddProductTable>> Categories(string category)
+        public async Task<CategoriesModel> Categories(string category, int pageNumber, int pageSize)
         {
             try
             {
-                List<AddProductTable> product = context.AddProductTable.Where(c => c.ProductCategory == category || c.ProductName == category || c.ProductType == category || c.ProductCategoryDescription == category || c.ProductCategoryType == category).ToList();
-                return product;
+                var MaxPageNumber = Math.Ceiling((double)(context.AddProductTable.Where(c => c.ProductCategory == category || c.ProductName == category || c.ProductType == category || c.ProductCategoryDescription == category || c.ProductCategoryType == category).Count()) /pageSize);
+                //int skipping = pageNumber - 1;
+                //if (MaxPageNumber > pageNumber)
+                //{
+                //    skipping = pageNumber;
+                //}
+                List<AddProductTable> product = context.AddProductTable.Where(c => c.ProductCategory == category || c.ProductName == category || c.ProductType == category || c.ProductCategoryDescription == category || c.ProductCategoryType == category)
+                .OrderBy(p => p.ProductId)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+                CategoriesModel categoriesModel = new CategoriesModel();
+                categoriesModel.addProductTables = product;
+                categoriesModel.MaxPageSize = MaxPageNumber;
+                return categoriesModel;
+
             }
             catch (Exception ex)
             {
                 log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
             }
-            return new List<AddProductTable>();
+            return new CategoriesModel();
         }
 
         public async Task<int> GetCartCounter(string Uid)

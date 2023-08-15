@@ -297,11 +297,14 @@ namespace Client.Controllers
         #region fetch all the category data like mens cloth 
         //[Route("~/Categories/{category}")]
         [HttpGet]
-        public async Task<IActionResult> Categories(string category)
+        public async Task<IActionResult> Categories(string category, int pageNumber = 1, int pageSize = 3)
         {
             try
             {
                 var user = HttpContext.User;
+
+                TempData["filter"] = category;
+                TempData["pageNumber"] = pageNumber;
 
                 // Access the desired claims by their claim type
                 //var Uid = user.FindFirst(ClaimTypes.PrimarySid)?.Value;
@@ -309,15 +312,15 @@ namespace Client.Controllers
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(URL);
-                    var response = await client.GetAsync("Product/Categories?category=" + category); // using concatenation
+                    var response = await client.GetAsync("Product/Categories?category=" + category + "&pageNumber="+ pageNumber + "&pageSize="+ pageSize); // using concatenation
                     var responseContent = await response.Content.ReadAsStringAsync();
-                    List<AddProduct> users = JsonConvert.DeserializeObject<List<AddProduct>>(responseContent);
+                    CategoriesModel users = JsonConvert.DeserializeObject<CategoriesModel>(responseContent);
                     if (response.IsSuccessStatusCode)
                     {
                         return View(users);
                     }
                 }
-                return View(new List<AddProduct>()); // Return an empty list if the user is not an admin or an error occurs
+                return View(new CategoriesModel()); // Return an empty list if the user is not an admin or an error occurs
             }
             catch (Exception ex)
             {

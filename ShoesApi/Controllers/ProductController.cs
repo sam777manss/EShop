@@ -18,10 +18,11 @@ namespace ShoesApi.Controllers
         #region fetch category related products
         [HttpGet]
         [Route("Categories")]
-        public async Task<IActionResult> Categories(string category)
+        public async Task<IActionResult> Categories(string category, int pageNumber, int pageSize)
         {
-            List<AddProductTable> adminIndexes = new List<AddProductTable>();
-            adminIndexes = await product.Categories(category);
+            CategoriesModel adminIndexes = new CategoriesModel();
+            adminIndexes = await product.Categories(category, pageNumber, pageSize);
+
             return Ok(adminIndexes);
         }
         #endregion

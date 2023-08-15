@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ShoesApi.DbContextFile.DBFiles;
 using ShoesApi.Interfaces;
 using ShoesApi.Models;
 using ShoesApi.Models.ProductModel;
@@ -26,6 +27,17 @@ namespace ShoesApi.Controllers
         }
         #endregion
 
+        #region fetch products
+        [HttpGet]
+        [Route("ProductTables")]
+        public async Task<IActionResult> ProductTables()
+        {
+           
+            List<AddProductTable> productIndexes = await admin.ProductTables();
+            return Ok(productIndexes);
+        }
+        #endregion
+
         #region fetch user data using id
         [HttpGet]
         [Route("Edit")]
@@ -37,6 +49,16 @@ namespace ShoesApi.Controllers
         }
         #endregion
 
+        #region fetch product data using id
+        [HttpGet]
+        [Route("EditProduct")]
+        public async Task<IActionResult> EditProduct(string Id)
+        {
+            AddProductTable product = await admin.EditProduct(Id);
+            return Ok(product);
+        }
+        #endregion
+
         #region Delete a user using id
         [HttpDelete]
         [Route("Delete")]
@@ -45,6 +67,23 @@ namespace ShoesApi.Controllers
             if (Id != null)
             {
                 bool flag = await admin.Delete(Id);
+                if (flag)
+                {
+                    return new StatusCodeResult(204); // Deletion completed but return void status
+                }
+            }
+            return new StatusCodeResult(500); // The request was not completed. The server met an unexpected condition.
+        }
+        #endregion
+
+        #region Delete a user using id
+        [HttpDelete]
+        [Route("DeleteProduct")]
+        public async Task<IActionResult> DeleteProduct(string Id)
+        {
+            if (Id != null)
+            {
+                bool flag = await admin.DeleteProduct(Id);
                 if (flag)
                 {
                     return new StatusCodeResult(204); // Deletion completed but return void status

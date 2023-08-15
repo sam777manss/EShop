@@ -129,7 +129,7 @@ namespace ShoesApi.Repositories
                         if (roles.Contains("Admin"))
                         {
 
-                            AdminIndex adminIndex = new AdminIndex()
+                            productIndex productIndex = new productIndex()
                             {
                                 Email = user.Email,
                                 Name = user.UserName,

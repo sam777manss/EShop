@@ -421,6 +421,50 @@
                 }).catch(error => console.error(error));
         }
 
+        // Categories pagination starts
+            //const products = document.getElementById("products");
+
+            const getProducts = (pageNumber, pageSize) => {
+                debugger
+            var currentPageNumber = document.getElementById("current-page").value;
+            var filterBy = document.getElementById("filterBy").value;
+
+            // update page number starts
+            $.ajax({
+                url: '/User/Categories?category=' + filterBy + '&pageNumber=' + parseInt(pageNumber) + '&pageSize=' + parseInt(pageSize),
+                type: "GET",
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    //alert("Updated Quantity in Database");
+                    document.getElementById("inputData").innerHTML = response;
+                    $("#Rendering").hide();
+
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+            // update page number ends
+
+            };
+
+
+            function previous() {
+                debugger;
+                if(previous != 0)
+                {
+                getProducts(parseInt(document.getElementById("prev-page").value), 3);
+                }
+
+            }
+            function next() {
+                debugger;
+                getProducts( parseInt(document.getElementById("next-page").value), 3);
+            }
+
+            //getProducts(1, 10);
+        // Categories pagination ends
     </script>
 
 </body>
