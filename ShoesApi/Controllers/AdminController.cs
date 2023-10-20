@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CommonModel;
+using Microsoft.AspNetCore.Mvc;
 using ShoesApi.DbContextFile.DBFiles;
 using ShoesApi.Interfaces;
 using ShoesApi.Models;
 using ShoesApi.Models.ProductModel;
+using System.Net;
 
 namespace ShoesApi.Controllers
 {
@@ -81,15 +83,21 @@ namespace ShoesApi.Controllers
         [Route("DeleteProduct")]
         public async Task<IActionResult> DeleteProduct(string Id)
         {
-            if (Id != null)
+            ApiResponseModel response = new();
+            try
             {
-                bool flag = await admin.DeleteProduct(Id);
-                if (flag)
+                if (Id != null)
                 {
-                    return new StatusCodeResult(204); // Deletion completed but return void status
+                    response = await admin.DeleteProduct(Id);
+
                 }
             }
-            return new StatusCodeResult(500); // The request was not completed. The server met an unexpected condition.
+            catch (Exception ex)
+            {
+                response.Code = (int)HttpStatusCode.InternalServerError;
+                response.Message = ex.Message;
+            }
+            return StatusCode(response.Code, response);
         }
         #endregion
 

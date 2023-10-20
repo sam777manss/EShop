@@ -51,7 +51,7 @@ namespace ShoesApi.Controllers
         #region add new product
         [HttpPost]
         [Route("AddProduct")]
-        public async Task<IActionResult> AddProduct([FromForm] AddProduct addProductdata)
+        public async Task<IActionResult> AddProduct( AddProduct addProductdata)
         {
             if (ModelState.IsValid)
             {

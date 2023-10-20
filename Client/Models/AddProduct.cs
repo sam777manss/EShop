@@ -13,11 +13,11 @@ namespace Client.Models
         public string? ProductCategoryDescription { get; set; }
         public string? ProductCategoryType { get; set; }
         //public string? ProductCategoryName { get; set;}
-        [Required(ErrorMessage = "Please select files")]
-        [NotMapped]
-        public List<IFormFile>? Files { get; set; }
+        //[Required(ErrorMessage = "Please select files")]
+        //[NotMapped]
+        //public List<IFormFile>? Files { get; set; }
         public string? MainImage { get; set; }
-
+        public IList<string>? ImageUrl { get; set; } = new List<string>();
         public string? VendorEmail { get; set; }
 
         public string? Price { get;set; }
@@ -26,6 +26,11 @@ namespace Client.Models
         public string? Large { get; set; }
         public string? XL { get; set; }
         public string? XXL { get; set; }
+
+    }
+    public class ImagesModel
+    {
+        public IList<string>? Images { get; set; } = new List<string>();
 
     }
 }

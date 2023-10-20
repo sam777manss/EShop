@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CommonModel;
+using Microsoft.AspNetCore.Mvc;
 using ShoesApi.DbContextFile.DBFiles;
 using ShoesApi.Models;
 using ShoesApi.Models.ProductModel;
@@ -11,7 +12,7 @@ namespace ShoesApi.Interfaces
 
         public Task<bool> Delete(string Id);
 
-        public Task<bool> DeleteProduct(string Id);
+        public Task<ApiResponseModel> DeleteProduct(string Id);
 
         public Task<AppUser> Edit(string Id);
         public Task<AddProductTable> EditProduct(string Id);

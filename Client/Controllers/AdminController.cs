@@ -1,9 +1,13 @@
 ﻿using Client.Models;
+using CommonModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Serilog;
+using System.Net;
+using System.Reflection;
 using System.Security.Claims;
+using static Microsoft.AspNetCore.Razor.Language.TagHelperMetadata;
 
 namespace Client.Controllers
 {
@@ -138,19 +142,38 @@ namespace Client.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteProduct(string Id)
         {
+            ApiResponseModel response = new(); 
+            ImagesModel imagesModel = new ImagesModel();
             if (Id != null)
             {
                 using (var client = new HttpClient())
                 {
                     client.BaseAddress = new Uri(URL);
-                    var response = await client.DeleteAsync("Admin/DeleteProduct?Id=" + Id);
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    if (response.IsSuccessStatusCode)
+                    var responseData = await client.DeleteAsync("Admin/DeleteProduct?Id=" + Id);
+                    var responseContent = await responseData.Content.ReadAsStringAsync();
+                    response = JsonConvert.DeserializeObject<ApiResponseModel>(responseContent);
+
+                    if (response.Code == (int)HttpStatusCode.OK)
                     {
-                        // TempData flow bidirectional but ViewBag and ViewData flow from controller to view only
-                        TempData["DeletionMessage"] = "Deletion completed successfully";
-                        return RedirectToAction("ProductTables");
+                        imagesModel = JsonConvert.DeserializeObject<ImagesModel>(response.Data.ToString());
+                        foreach(var Img in imagesModel.Images)
+                        {
+                            string imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "ImagesFolder", Img);
+                            FileInfo file = new FileInfo(imagePath);
+                            if(file.Exists)
+                            {
+                                file.Delete();
+
+                            }
+                        }
+
                     }
+                    //if (response.IsSuccessStatusCode)
+                    //{
+                    //    // TempData flow bidirectional but ViewBag and ViewData flow from controller to view only
+                    //    TempData["DeletionMessage"] = "Deletion completed successfully";
+                       return RedirectToAction("ProductTables");
+                    //}
                 }
             }
             return View();
@@ -213,79 +236,79 @@ namespace Client.Controllers
         #endregion
 
         #region updates user details and profile photo
-        [HttpPost]
-        public async Task<ActionResult> ProductSaveEdits([FromForm] AddProduct? addProduct)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    using (var client = new HttpClient())
-                    {
-                        // Set the base address of the Web API endpoint
-                        client.BaseAddress = new Uri(URL + "Admin/ProductSaveEdits");
+        //[HttpPost]
+        //public async Task<ActionResult> ProductSaveEdits([FromForm] AddProduct? addProduct)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            using (var client = new HttpClient())
+        //            {
+        //                // Set the base address of the Web API endpoint
+        //                client.BaseAddress = new Uri(URL + "Admin/ProductSaveEdits");
 
-                        // Create a new instance of MultipartFormDataContent
-                        var multiContent = new MultipartFormDataContent();
+        //                // Create a new instance of MultipartFormDataContent
+        //                var multiContent = new MultipartFormDataContent();
 
-                        // Add the fields from the AddProduct object
-                        multiContent.Add(new StringContent(addProduct.ProductName ?? ""), "ProductName");
-                        multiContent.Add(new StringContent(addProduct.ProductDescription ?? ""), "ProductDescription");
-                        multiContent.Add(new StringContent(addProduct.ProductType ?? ""), "ProductType");
-                        multiContent.Add(new StringContent(addProduct.ProductCategory ?? ""), "ProductCategory");
-                        multiContent.Add(new StringContent(addProduct.ProductCategoryType ?? ""), "ProductCategoryType");
-                        multiContent.Add(new StringContent(addProduct.ProductCategoryDescription ?? ""), "ProductCategoryDescription");
-                        multiContent.Add(new StringContent(addProduct.VendorEmail ?? ""), "VendorEmail");
+        //                // Add the fields from the AddProduct object
+        //                multiContent.Add(new StringContent(addProduct.ProductName ?? ""), "ProductName");
+        //                multiContent.Add(new StringContent(addProduct.ProductDescription ?? ""), "ProductDescription");
+        //                multiContent.Add(new StringContent(addProduct.ProductType ?? ""), "ProductType");
+        //                multiContent.Add(new StringContent(addProduct.ProductCategory ?? ""), "ProductCategory");
+        //                multiContent.Add(new StringContent(addProduct.ProductCategoryType ?? ""), "ProductCategoryType");
+        //                multiContent.Add(new StringContent(addProduct.ProductCategoryDescription ?? ""), "ProductCategoryDescription");
+        //                multiContent.Add(new StringContent(addProduct.VendorEmail ?? ""), "VendorEmail");
 
-                        multiContent.Add(new StringContent(addProduct.Price ?? ""), "Price");
-                        multiContent.Add(new StringContent(addProduct.Small ?? ""), "Small");
-                        multiContent.Add(new StringContent(addProduct.Medium ?? ""), "Medium");
-                        multiContent.Add(new StringContent(addProduct.Large ?? ""), "Large");
-                        multiContent.Add(new StringContent(addProduct.XL ?? ""), "XL");
-                        multiContent.Add(new StringContent(addProduct.XXL ?? ""), "XXL");
+        //                multiContent.Add(new StringContent(addProduct.Price ?? ""), "Price");
+        //                multiContent.Add(new StringContent(addProduct.Small ?? ""), "Small");
+        //                multiContent.Add(new StringContent(addProduct.Medium ?? ""), "Medium");
+        //                multiContent.Add(new StringContent(addProduct.Large ?? ""), "Large");
+        //                multiContent.Add(new StringContent(addProduct.XL ?? ""), "XL");
+        //                multiContent.Add(new StringContent(addProduct.XXL ?? ""), "XXL");
 
-                        // Convert the AddProduct object to JSON and add it as a StringContent
-                        var addProductJson = JsonConvert.SerializeObject(addProduct);
-                        multiContent.Add(new StringContent(addProductJson), "addProduct");
+        //                // Convert the AddProduct object to JSON and add it as a StringContent
+        //                var addProductJson = JsonConvert.SerializeObject(addProduct);
+        //                multiContent.Add(new StringContent(addProductJson), "addProduct");
 
-                        // Add the image files
-                        foreach (var file in addProduct.Files)
-                        {
-                            var fileContent = new StreamContent(file.OpenReadStream());
-                            multiContent.Add(fileContent, "Files", file.FileName);
-                        }
+        //                // Add the image files
+        //                foreach (var file in addProduct.Files)
+        //                {
+        //                    var fileContent = new StreamContent(file.OpenReadStream());
+        //                    multiContent.Add(fileContent, "Files", file.FileName);
+        //                }
 
-                        // Send the HTTP POST request to the Web API
-                        var response = await client.PostAsync("", multiContent);
+        //                // Send the HTTP POST request to the Web API
+        //                var response = await client.PostAsync("", multiContent);
 
-                        // Add the image files to the wwwroot folder
-                        foreach (var file in addProduct.Files)
-                        {
-                            var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "ImagesFolder", file.FileName);
-                            // Save the image to the specified path
-                            using (var stream = new FileStream(imagePath, FileMode.Create))
-                            {
-                                await file.CopyToAsync(stream);
-                            }
-                        }
+        //                // Add the image files to the wwwroot folder
+        //                foreach (var file in addProduct.Files)
+        //                {
+        //                    var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "ImagesFolder", file.FileName);
+        //                    // Save the image to the specified path
+        //                    using (var stream = new FileStream(imagePath, FileMode.Create))
+        //                    {
+        //                        await file.CopyToAsync(stream);
+        //                    }
+        //                }
 
-                        if (response.IsSuccessStatusCode)
-                        {
-                            return PartialView("_UserProductModal", addProduct);
-                        }
-                        else
-                        {
-                            ModelState.AddModelError("", "Failed to upload the image");
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
-                }
-            }
-            return PartialView("_UserProductModal", addProduct);
-        }
+        //                if (response.IsSuccessStatusCode)
+        //                {
+        //                    return PartialView("_UserProductModal", addProduct);
+        //                }
+        //                else
+        //                {
+        //                    ModelState.AddModelError("", "Failed to upload the image");
+        //                }
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
+        //        }
+        //    }
+        //    return PartialView("_UserProductModal", addProduct);
+        //}
         #endregion
 
         #region Delete user using id
@@ -324,52 +347,22 @@ namespace Client.Controllers
 
         #region Add New Product and multi images
         [HttpPost]
-        public async Task<IActionResult> AddProduct([FromForm] AddProduct addProduct)
+        public async Task<IActionResult> AddProduct(AddProduct addProduct)
         {
-            if(ModelState.IsValid)
+            //if(ModelState.IsValid)
+            //{
+            try
             {
-                try
+                using (var client = new HttpClient())
                 {
-                    using (var client = new HttpClient())
+                    // image
+                    if (Request.Form.Files.Count > 0)
                     {
-                        // Set the base address of the Web API endpoint
-                        client.BaseAddress = new Uri(URL + "Product/AddProduct");
-
-                        // Create a new instance of MultipartFormDataContent
-                        var multiContent = new MultipartFormDataContent();
-
-                        // Add the fields from the AddProduct object
-                        multiContent.Add(new StringContent(addProduct.ProductName ?? ""), "ProductName");
-                        multiContent.Add(new StringContent(addProduct.ProductDescription ?? ""), "ProductDescription");
-                        multiContent.Add(new StringContent(addProduct.ProductType ?? ""), "ProductType");
-                        multiContent.Add(new StringContent(addProduct.ProductCategory ?? ""), "ProductCategory");
-                        multiContent.Add(new StringContent(addProduct.ProductCategoryType ?? ""), "ProductCategoryType");
-                        multiContent.Add(new StringContent(addProduct.ProductCategoryDescription ?? ""), "ProductCategoryDescription");
-                        multiContent.Add(new StringContent(addProduct.VendorEmail ?? ""), "VendorEmail");
-
-                        multiContent.Add(new StringContent(addProduct.Price ?? ""), "Price");
-                        multiContent.Add(new StringContent(addProduct.Small ?? ""), "Small");
-                        multiContent.Add(new StringContent(addProduct.Medium ?? ""), "Medium");
-                        multiContent.Add(new StringContent(addProduct.Large ?? ""), "Large");
-                        multiContent.Add(new StringContent(addProduct.XL ?? ""), "XL");
-                        multiContent.Add(new StringContent(addProduct.XXL ?? ""), "XXL");
-
-                        // Convert the AddProduct object to JSON and add it as a StringContent
-                        var addProductJson = JsonConvert.SerializeObject(addProduct);
-                        multiContent.Add(new StringContent(addProductJson), "addProduct");
-
-                        // Add the image files
-                        foreach (var file in addProduct.Files)
-                        {
-                            var fileContent = new StreamContent(file.OpenReadStream());
-                            multiContent.Add(fileContent, "Files", file.FileName);
-                        }
-
-                        // Send the HTTP POST request to the Web API
-                        var response = await client.PostAsync("", multiContent);
+                        string wwwRootPath = _webHostEnvironment.WebRootPath;
+                        IFormFileCollection files = Request.Form.Files;
 
                         // Add the image files to the wwwroot folder
-                        foreach (var file in addProduct.Files)
+                        foreach (var file in files)
                         {
                             var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "ImagesFolder", file.FileName);
                             // Save the image to the specified path
@@ -377,7 +370,11 @@ namespace Client.Controllers
                             {
                                 await file.CopyToAsync(stream);
                             }
+                            addProduct.ImageUrl.Add(file.FileName);
                         }
+                        client.BaseAddress = new Uri(URL+ "Product/AddProduct");
+
+                        var response = await client.PostAsJsonAsync("", addProduct);
 
                         if (response.IsSuccessStatusCode)
                         {
@@ -389,11 +386,12 @@ namespace Client.Controllers
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
-                }
             }
+            catch (Exception ex)
+            {
+                Log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
+            }
+            //}
             return View();
         }
         #endregion

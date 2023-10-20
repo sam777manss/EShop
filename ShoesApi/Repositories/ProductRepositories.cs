@@ -180,7 +180,7 @@ namespace ShoesApi.Repositories
             return true;
         }
 
-        public async Task<IActionResult> AddProduct(AddProduct product)
+        public async Task<IActionResult> AddProduct( AddProduct product)
         {
             try
             {
@@ -201,14 +201,14 @@ namespace ShoesApi.Repositories
                     XL = product.XL,
                     XXL = product.XXL,
                     ProductId = product.ProductId,
-                    MainImage = product.Files?.FirstOrDefault()?.FileName // fetch first main image
+                    MainImage = product.ImageUrl[0] // fetch first main image
                 };
                 context.AddProductTable.Add(newProduct);
-                foreach (var file in product.Files)
+                foreach (var file in product.ImageUrl)
                 {
                     var productImage = new ProductImageTable
                     {
-                        ImageUrl = file.FileName,
+                        ImageUrl = file,
                         AddProductTables = newProduct
                     };
                     context.ProductImageTable.Add(productImage);

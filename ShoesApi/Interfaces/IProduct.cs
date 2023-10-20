@@ -9,7 +9,7 @@ namespace ShoesApi.Interfaces
     {
         public Task<CategoriesModel> Categories(string category, int pageNumber, int pageSize);
         public Task<ProductInfo> InfoById(string ProductId);
-        public Task<IActionResult> AddProduct(AddProduct addProduct);
+        public Task<IActionResult> AddProduct( AddProduct addProduct);
         public Task<IActionResult> ProductDetail(UserCart cart);
         public Task<Object> UserCartDetails(string Uid);
         public Task<bool> DeleteProduct(string UserCartTableId);

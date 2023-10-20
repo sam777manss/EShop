@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CommonModel;
 using log4net;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -183,17 +184,22 @@ namespace ShoesApi.Repositories
             return false;
         }
 
-        public async Task<bool> DeleteProduct(string Id)
+        public async Task<ApiResponseModel> DeleteProduct(string Id)
         {
+            var response = new ApiResponseModel();
             try
             {
+                ImagesModel files = new ImagesModel();
                 AddProductTable? Product = context.AddProductTable.Where(product => product.ProductId == Guid.Parse(Id)).FirstOrDefault();
                 if (Product != null)
                 {
+                    
                     // Delete all associated ProductImageTable entities
                     var productImageTables = await context.ProductImageTable.Where(p => p.ProductId == Guid.Parse(Id)).ToListAsync();
                     foreach (var productImageTable in productImageTables)
                     {
+
+                        files.Images.Add(productImageTable.ImageUrl);
                         context.ProductImageTable.Remove(productImageTable);
                     }
 
@@ -205,15 +211,16 @@ namespace ShoesApi.Repositories
 
                     context.AddProductTable.Remove(Product);
                     await context.SaveChangesAsync();
-                    return true;
-                }
 
+                    response.Data = files;
+                }
+                return response;
             }
             catch (Exception ex)
             {
                 log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
+                throw;
             }
-            return false;
         }
 
         public async Task<IActionResult> SaveEdits(AppUser appUser)
