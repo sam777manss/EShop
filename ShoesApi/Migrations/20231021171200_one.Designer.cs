@@ -12,8 +12,8 @@ using ShoesApi.DbContextFile;
 namespace ShoesApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230814121143_productTables2")]
-    partial class productTables2
+    [Migration("20231021171200_one")]
+    partial class one
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -220,6 +220,7 @@ namespace ShoesApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("ProductId")
+                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("ProductImgId");
@@ -402,7 +403,8 @@ namespace ShoesApi.Migrations
                     b.HasOne("ShoesApi.DbContextFile.DBFiles.AddProductTable", "AddProductTables")
                         .WithMany("ProductImageTable")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("AddProductTables");
                 });

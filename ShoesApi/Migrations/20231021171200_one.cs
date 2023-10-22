@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ShoesApi.Migrations
 {
-    public partial class UserCart : Migration
+    public partial class one : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,6 +54,7 @@ namespace ShoesApi.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     State = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Zip_Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -107,7 +108,8 @@ namespace ShoesApi.Migrations
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ProuctColor = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProductSize = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProductSum = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ProductSum = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Quantity = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

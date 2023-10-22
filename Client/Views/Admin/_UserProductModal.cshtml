@@ -10,7 +10,8 @@
                 <span class="d-none d-sm-block">Upload new photo</span>
                 <i class="bx bx-upload d-block d-sm-none"></i>
 
-                <input type="file" id="upload" class="account-file-input" hidden="" accept="image/png, image/jpeg" name="imageFile">
+                <input type="file" id="upload" class="account-file-input" hidden="" accept="image/png, image/jpeg" name="Files" multiple />
+
                 @*                @if (Model.imageUrl != null)
                 {
                 <input type="hidden" name="imageUrl" value="@Model.imageUrl" />
@@ -80,7 +81,7 @@
 
             // Make an Ajax request
             $.ajax({
-                url: '/Admin/ProductSaveEdits',
+                url: '/Admin/UpdateProduct',
                 type: 'POST',
                 data: formData,
                 contentType: false,

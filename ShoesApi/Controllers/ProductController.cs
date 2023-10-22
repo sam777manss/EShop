@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CommonModel;
+using Microsoft.AspNetCore.Mvc;
 using ShoesApi.DbContextFile.DBFiles;
 using ShoesApi.Interfaces;
 using ShoesApi.Models;
@@ -53,16 +54,28 @@ namespace ShoesApi.Controllers
         [Route("AddProduct")]
         public async Task<IActionResult> AddProduct( AddProduct addProductdata)
         {
-            if (ModelState.IsValid)
-            {
-                IActionResult result = await product.AddProduct(addProductdata);
-                // Return a response indicating success
-                return new StatusCodeResult(200);
-            }
-            return BadRequest();
+            IActionResult result = await product.AddProduct(addProductdata);
+            // Return a response indicating success
+            return new StatusCodeResult(200);
         }
         #endregion
-
+        #region add new product
+        [HttpPost]
+        [Route("UpdateProduct")]
+        public async Task<ApiResponseModel> UpdateProduct(AddProduct addProductdata)
+        {
+            try
+            {
+                ApiResponseModel result = await product.UpdateProduct(addProductdata);
+                // Return a response indicating success
+                return result;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        #endregion
 
         [HttpPost]
         [Route("ProductDetail")]

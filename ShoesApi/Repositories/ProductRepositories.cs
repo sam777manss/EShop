@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using CommonModel;
 
 namespace ShoesApi.Repositories
 {
@@ -222,6 +223,53 @@ namespace ShoesApi.Repositories
             return new StatusCodeResult(500);
         }
 
+        public async Task<ApiResponseModel> UpdateProduct(AddProduct addProduct)
+        {
+            var response = new ApiResponseModel();
+            try
+            {
+                var data = context.AddProductTable.Where(x => x.ProductId == addProduct.ProductId).FirstOrDefault();
+
+                if (data != null)
+                {
+                    data.ProductName = addProduct.ProductName;
+                    data.Price = addProduct.Price;
+                    data.VendorEmail = addProduct.VendorEmail;
+                    data.ProductType = addProduct.ProductType;
+                    data.MainImage = addProduct.ImageUrl[0];
+
+                    var productImageTables = context.ProductImageTable.Where(x => x.ProductId == addProduct.ProductId).ToList();
+                    ImagesModel files = new ImagesModel();
+                    foreach (var productImageTable in productImageTables)
+                    {
+
+                        files.Images.Add(productImageTable.ImageUrl);
+                        context.ProductImageTable.Remove(productImageTable);
+                    }
+                    response.Data = files;
+                    //context.ProductImageTable.RemoveRange(context.ProductImageTable.Where(x => x.ProductId == addProduct.ProductId).ToList());
+                    foreach (var file in addProduct.ImageUrl)
+                    {
+                        var productImage = new ProductImageTable
+                        {
+                            ImageUrl = file,
+                            AddProductTables = data
+                        };
+                        context.ProductImageTable.Add(productImage);
+                        //context.ProductImageTable.Add(productImage);
+                    }
+                    await context.SaveChangesAsync();
+
+                    return response;
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex.InnerException != null ? string.Format("Inner Exception: {0} --- Exception: {1}", ex.InnerException.Message, ex.Message) : ex.Message, ex);
+            }
+            return response;
+        }
         public async Task<Object> UserCartDetails(string Uid)
         {
             try
